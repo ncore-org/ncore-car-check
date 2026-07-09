@@ -20,15 +20,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v4
         with:
-          bun-version: latest
+          node-version: 22
+          cache: npm
 
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
+      - run: npm install
 
-      - name: Build
-        run: bun run build
+      - run: npm run build
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
@@ -36,8 +35,4 @@ jobs:
           path: .output/public
 
       - name: Deploy to Pages
-        id: deployment
         uses: actions/deploy-pages@v4
-
-      - name: Print deploy URL
-        run: echo "Deployed to https://ncore-org.github.io/ncore-car-check/"
