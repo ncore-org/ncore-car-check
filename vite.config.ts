@@ -8,5 +8,6 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss(), tsConfigPaths()],
+    base: "/ncore-car-check/",
   },
 });
