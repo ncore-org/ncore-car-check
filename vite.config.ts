@@ -6,4 +6,12 @@ import tsConfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
   plugins: [react(), tailwindcss(), tsConfigPaths()],
   base: "/ncore-car-check/",
+  server: {
+    proxy: {
+      "/api/vin": {
+        target: "http://localhost:4000",
+        changeOrigin: true,
+      },
+    },
+  },
 });

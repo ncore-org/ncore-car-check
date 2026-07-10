@@ -152,3 +152,131 @@
     color: var(--color-foreground);
   }
 }
+
+/* ========== Custom enterprise animations ========== */
+/* Cookie consent enter — slide up + elastic */
+@keyframes cookie-enter {
+  0% {
+    transform: translateY(100%) scale(0.96);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes cookie-exit {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(20px) scale(0.98);
+    opacity: 0;
+  }
+}
+
+.animate-cookie-enter {
+  animation: cookie-enter 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-cookie-exit {
+  animation: cookie-exit 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Cookie details panel fade-in */
+@keyframes cookie-details {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+    max-height: 0;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    max-height: 500px;
+  }
+}
+
+.animate-cookie-details {
+  animation: cookie-details 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  overflow: hidden;
+}
+
+/* Hero car silhouette pulse */
+@keyframes hero-pulse-glow {
+  0%, 100% {
+    opacity: 0.7;
+    filter: brightness(1) drop-shadow(0 0 20px oklch(0.78 0.19 145 / 0.3));
+  }
+  50% {
+    opacity: 1;
+    filter: brightness(1.1) drop-shadow(0 0 40px oklch(0.78 0.19 145 / 0.5));
+  }
+}
+
+.animate-hero-pulse {
+  animation: hero-pulse-glow 4s ease-in-out infinite;
+}
+
+/* Hero floating orbs */
+@keyframes hero-float-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(10px, -15px) scale(1.05); }
+  66% { transform: translate(-5px, 10px) scale(0.95); }
+}
+
+@keyframes hero-float-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-12px, -8px) scale(0.95); }
+  66% { transform: translate(8px, 12px) scale(1.05); }
+}
+
+@keyframes hero-float-3 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(5px, -10px) rotate(3deg); }
+}
+
+.animate-float-1 { animation: hero-float-1 8s ease-in-out infinite; }
+.animate-float-2 { animation: hero-float-2 10s ease-in-out infinite; }
+.animate-float-3 { animation: hero-float-3 6s ease-in-out infinite; }
+
+/* Trust bar marquee */
+@keyframes trust-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-trust-scroll {
+  animation: trust-scroll 30s linear infinite;
+}
+
+.animate-trust-scroll:hover {
+  animation-play-state: paused;
+}
+
+/* Section reveal */
+@keyframes section-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-section-reveal {
+  animation: section-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Card hover lift */
+@keyframes card-lift {
+  0% { transform: translateY(0); box-shadow: var(--shadow-elegant); }
+  100% { transform: translateY(-4px); box-shadow: 0 12px 40px -12px oklch(0.22 0.05 255 / 0.3); }
+}

@@ -90,173 +90,181 @@ export function FinancingCalculator() {
   const worstApr = Math.max(...allResults.filter((r) => r.eligible).map((r) => r.apr), 0);
 
   return (
-    <section id="kalkulacka" className="mx-auto max-w-6xl px-4 py-16">
-      <div className="max-w-2xl">
-        <p className="text-sm font-semibold uppercase tracking-widest text-[oklch(0.5_0.15_155)]">
-          Kalkulačka splátok
-        </p>
-        <h2 className="mt-2 text-3xl font-bold text-foreground sm:text-4xl">
-          Vypočítajte si splátku úveru alebo leasingu
-        </h2>
-        <p className="mt-3 text-muted-foreground">
-          Zadajte sumu a koľko chcete mesačne splácať. Predvolene porovnávame ponuky všetkých
-          {" "}{supported.length} partnerov a odporúčame najvýhodnejšieho.
-        </p>
-      </div>
+    <section id="kalkulacka" className="relative overflow-hidden py-20">
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background via-secondary/10 to-background" />
+      <div className="pointer-events-none absolute -left-40 top-40 h-72 w-72 opacity-20 [background:radial-gradient(circle,oklch(0.78_0.19_145/0.06),transparent_60%)]" />
 
-      {/* Ovládače: produkt + poskytovateľ */}
-      <div className="mt-8 flex flex-wrap items-center gap-3">
-        <div className="grid grid-cols-2 rounded-xl border border-border bg-muted p-1">
-          {(["loan", "leasing"] as const).map((k) => (
-            <button
-              key={k}
-              onClick={() => setProduct(k)}
-              className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
-                product === k
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+      <div className="relative mx-auto max-w-6xl px-4">
+        <div className="max-w-2xl">
+          <p className="inline-flex items-center gap-2 rounded-full border border-[oklch(0.78_0.19_145)]/20 bg-[oklch(0.78_0.19_145)]/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-[oklch(0.5_0.15_155)]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[oklch(0.78_0.19_145)]" />
+            Kalkulačka splátok
+          </p>
+          <h2 className="mt-4 text-3xl font-bold text-foreground sm:text-4xl">
+            Vypočítajte si splátku úveru alebo leasingu
+          </h2>
+          <p className="mt-3 max-w-xl text-base leading-relaxed text-muted-foreground">
+            Zadajte sumu a koľko chcete mesačne splácať. Predvolene porovnávame ponuky všetkých
+            {" "}{supported.length} partnerov a odporúčame najvýhodnejšieho.
+          </p>
+        </div>
+
+        <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="grid grid-cols-2 rounded-xl border border-border bg-muted p-1 shadow-[var(--shadow-elegant)]">
+            {(["loan", "leasing"] as const).map((k) => (
+              <button
+                key={k}
+                onClick={() => setProduct(k)}
+                className={`rounded-lg px-5 py-2 text-sm font-semibold transition ${
+                  product === k
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {k === "loan" ? "Úver" : "Leasing"}
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/70">
+              Poskytovateľ
+            </label>
+            <select
+              value={providerId}
+              onChange={(e) => setProviderId(e.target.value)}
+              className="rounded-xl border border-input bg-card px-3 py-2 text-sm font-medium text-foreground shadow-sm"
             >
-              {k === "loan" ? "Úver" : "Leasing"}
-            </button>
-          ))}
+              <option value="all">✨ Všetky (najlepšia ponuka)</option>
+              {supported.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Poskytovateľ
-          </label>
-          <select
-            value={providerId}
-            onChange={(e) => setProviderId(e.target.value)}
-            className="rounded-xl border border-input bg-background px-3 py-2 text-sm font-medium text-foreground"
-          >
-            <option value="all">✨ Všetky (najlepšia ponuka)</option>
-            {supported.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
 
-      {/* Hlavná karta kalkulačky — 2 stĺpce */}
-      <div className="mt-6 overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
-        <div className="grid gap-0 md:grid-cols-[1.4fr_1fr]">
-          {/* Ľavá časť: inputy */}
-          <div className="p-6 sm:p-8">
-            <SliderField
-              label={<>Vyberte <strong>výšku {product === "loan" ? "pôžičky" : "financovania"}</strong></>}
-              value={amount}
-              min={amountMin}
-              max={amountMax}
-              step={100}
-              format={eur}
-              onChange={setAmount}
-            />
-
-            <div className="mt-8">
+        <div className="mt-6 overflow-hidden rounded-3xl border border-border/60 bg-card shadow-[0_20px_60px_-20px_oklch(0.22_0.05_255/0.15)]">
+          <div className="grid gap-0 md:grid-cols-[1.4fr_1fr]">
+            <div className="p-6 sm:p-8">
               <SliderField
-                label={<>Vyberte <strong>koľko chcete splácať</strong></>}
-                value={Math.min(Math.max(monthly, monthlyMin), monthlyMax)}
-                min={monthlyMin}
-                max={monthlyMax}
-                step={5}
-                format={(n) => eur(n)}
-                onChange={setMonthly}
+                label={<>Vyberte <strong>výšku {product === "loan" ? "pôžičky" : "financovania"}</strong></>}
+                value={amount}
+                min={amountMin}
+                max={amountMax}
+                step={100}
+                format={eur}
+                onChange={setAmount}
               />
+
+              <div className="mt-8">
+                <SliderField
+                  label={<>Vyberte <strong>koľko chcete splácať</strong></>}
+                  value={Math.min(Math.max(monthly, monthlyMin), monthlyMax)}
+                  min={monthlyMin}
+                  max={monthlyMax}
+                  step={5}
+                  format={(n) => eur(n)}
+                  onChange={setMonthly}
+                />
+              </div>
+            </div>
+
+            <div className="relative border-t border-border/60 bg-gradient-to-br from-muted/60 to-muted/20 p-6 sm:p-8 md:border-l md:border-t-0">
+              <div className="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-[oklch(0.78_0.19_145)]/5 blur-xl" />
+
+              <div className="relative">
+                <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50">
+                  Sumár
+                </p>
+                <SummaryRow
+                  label={product === "loan" ? "Pôžička" : "Leasing"}
+                  value={eur(amount)}
+                />
+                <SummaryRow
+                  label="Splátka"
+                  value={activeQuote ? eur2(activeQuote.monthly) : "—"}
+                  strong
+                />
+                <SummaryRow
+                  label="Minimálna splátka"
+                  hint="Pri maximálnej dobe splácania u vybraného poskytovateľa."
+                  value={activeCfg ? eur2(minMonthlyFor(amount, activeCfg.aprPct, activeCfg.maxMonths)) : "—"}
+                  accent
+                />
+                <SummaryRow
+                  label="Doba splácania"
+                  value={months ? `${months} mesiacov` : "—"}
+                />
+                <SummaryRow
+                  label="Celkom zaplatíte"
+                  hint="Súčet všetkých splátok a poplatku za spracovanie."
+                  value={activeQuote ? eur2(activeQuote.total) : "—"}
+                  strong
+                />
+
+                {activeProvider && activeQuote?.eligible ? (
+                  <div className="mt-6 space-y-3">
+                    <div className="flex items-center gap-2.5 rounded-xl border border-border/40 bg-background/70 p-3 text-xs text-muted-foreground shadow-sm backdrop-blur">
+                      <span
+                        className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[10px] font-black text-white"
+                        style={{ background: activeProvider.brandColor }}
+                      >
+                        {activeProvider.short.slice(0, 2).toUpperCase()}
+                      </span>
+                      <span>
+                        Ponuka <strong className="text-foreground">{activeProvider.name}</strong> · APR{" "}
+                        <strong className="text-foreground">{activeQuote.apr}%</strong>
+                      </span>
+                    </div>
+                    <a
+                      href={activeProvider.calculatorUrl ?? activeProvider.homepage}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[oklch(0.22_0.05_255)] to-[oklch(0.28_0.07_250)] px-5 py-3.5 text-sm font-bold text-white shadow-md shadow-black/10 transition-all hover:shadow-lg hover:shadow-black/15 hover:brightness-110"
+                    >
+                      Požiadať online <ArrowUpRight className="h-4 w-4" />
+                    </a>
+                    <p className="text-center text-[11px] text-muted-foreground">Výpočet je orientačný.</p>
+                  </div>
+                ) : (
+                  <div className="mt-6 rounded-xl border border-dashed border-border bg-background/60 p-4 text-xs text-muted-foreground">
+                    {activeQuote?.reason ?? "Upravte sumu alebo splátku pre platnú ponuku."}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
+        </div>
 
-          {/* Pravá časť: sumár */}
-          <div className="border-t border-border bg-muted/60 p-6 sm:p-8 md:border-l md:border-t-0">
-            <SummaryRow
-              label={product === "loan" ? "Pôžička" : "Leasing"}
-              value={eur(amount)}
-            />
-            <SummaryRow
-              label="Splátka"
-              value={activeQuote ? eur2(activeQuote.monthly) : "—"}
-              strong
-            />
-            <SummaryRow
-              label="Minimálna splátka"
-              hint="Pri maximálnej dobe splácania u vybraného poskytovateľa."
-              value={activeCfg ? eur2(minMonthlyFor(amount, activeCfg.aprPct, activeCfg.maxMonths)) : "—"}
-              accent
-            />
-            <SummaryRow
-              label="Doba splácania"
-              value={months ? `${months} mesiacov` : "—"}
-            />
-            <SummaryRow
-              label="Celkom zaplatíte"
-              hint="Súčet všetkých splátok a poplatku za spracovanie."
-              value={activeQuote ? eur2(activeQuote.total) : "—"}
-              strong
-            />
-
-            {activeProvider && activeQuote?.eligible ? (
-              <div className="mt-6 space-y-3">
-                <div className="flex items-center gap-2 rounded-xl bg-background/80 p-3 text-xs text-muted-foreground">
-                  <span
-                    className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-[10px] font-black text-white"
-                    style={{ background: activeProvider.brandColor }}
-                  >
-                    {activeProvider.short.slice(0, 2).toUpperCase()}
-                  </span>
-                  <span>
-                    Ponuka <strong className="text-foreground">{activeProvider.name}</strong> · APR{" "}
-                    <strong className="text-foreground">{activeQuote.apr}%</strong>
-                  </span>
+        {providerId === "all" && (
+          <div className="mt-8 rounded-3xl border border-border/60 bg-card p-6 shadow-[0_20px_60px_-20px_oklch(0.22_0.05_255/0.1)] sm:p-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full border border-[oklch(0.78_0.19_145)]/20 bg-[oklch(0.78_0.19_145)]/5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[oklch(0.5_0.15_155)]">
+                  <Sparkles className="h-3.5 w-3.5" /> Porovnanie {allResults.length} partnerov
                 </div>
-                <a
-                  href={activeProvider.calculatorUrl ?? activeProvider.homepage}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[oklch(0.55_0.17_150)] px-5 py-3.5 text-sm font-bold text-white shadow-sm transition hover:opacity-95"
-                >
-                  Požiadať online <ArrowUpRight className="h-4 w-4" />
-                </a>
-                <p className="text-center text-xs text-muted-foreground">Výpočet je orientačný.</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Pri dobe <strong className="text-foreground">{months || "—"} mes.</strong> a sume{" "}
+                  <strong className="text-foreground">{eur(amount)}</strong>. Zoradené od najvýhodnejšej ponuky.
+                </p>
               </div>
-            ) : (
-              <div className="mt-6 rounded-xl border border-dashed border-border bg-background/60 p-3 text-xs text-muted-foreground">
-                {activeQuote?.reason ?? "Upravte sumu alebo splátku pre platnú ponuku."}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Porovnanie všetkých poskytovateľov (režim „Všetky“) */}
-      {providerId === "all" && (
-        <div className="mt-8 rounded-3xl border border-border bg-card p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full bg-[oklch(0.94_0.06_150)] px-3 py-1 text-xs font-semibold text-[oklch(0.4_0.15_155)]">
-                <Sparkles className="h-3.5 w-3.5" /> Porovnanie {allResults.length} partnerov
-              </div>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Pri dobe <strong className="text-foreground">{months || "—"} mes.</strong> a sume{" "}
-                <strong className="text-foreground">{eur(amount)}</strong>. Zoradené od najvýhodnejšej ponuky.
-              </p>
+            </div>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {allResults.map((r, i) => (
+                <ResultRow key={r.provider.id} q={r} rank={i + 1} bestApr={bestApr} worstApr={worstApr} />
+              ))}
             </div>
           </div>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {allResults.map((r, i) => (
-              <ResultRow key={r.provider.id} q={r} rank={i + 1} bestApr={bestApr} worstApr={worstApr} />
-            ))}
-          </div>
-        </div>
-      )}
+        )}
 
-      <p className="mt-5 flex items-start gap-2 text-[11px] leading-relaxed text-muted-foreground">
-        <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-        Uvedené hodnoty sú <strong>orientačné</strong> a slúžia len na porovnanie. Nejde o záväznú
-        ponuku ani schválenie financovania. Skutočné podmienky určuje konkrétny poskytovateľ na
-        základe posúdenia bonity, príjmu, veku a ďalších kritérií. nCc nie je finančný sprostredkovateľ.
-      </p>
+        <p className="mt-5 flex items-start gap-2 text-[11px] leading-relaxed text-muted-foreground/70">
+          <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+          Uvedené hodnoty sú <strong>orientačné</strong> a slúžia len na porovnanie. Nejde o záväznú
+          ponuku ani schválenie financovania. Skutočné podmienky určuje konkrétny poskytovateľ na
+          základe posúdenia bonity, príjmu, veku a ďalších kritérií. nCc nie je finančný sprostredkovateľ.
+        </p>
+      </div>
     </section>
   );
 }

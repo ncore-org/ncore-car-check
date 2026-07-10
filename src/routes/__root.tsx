@@ -8,6 +8,7 @@ import {
 import { type ReactNode } from "react";
 
 import "../styles.css";
+import { CookieConsent } from "@/components/site/CookieConsent";
 
 function NotFoundComponent() {
   return (
@@ -76,8 +77,8 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <CookieConsent />
     </QueryClientProvider>
   );
 }
